@@ -4,6 +4,18 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-12
+
+### Added
+
+- Retrieval metadata from YAML frontmatter: document type, date, people, and tags.
+- Exact `document_types`, `dates`, and `people` filters for the CLI and MCP `search_context` tool.
+- Metadata-aware dense and lexical embeddings while keeping cited result text unchanged.
+
+### Changed
+
+- The index recipe version now forces a safe re-index so existing collections gain metadata payloads.
+
 ## [0.1.0] - 2026-08-12
 
 ### Added

@@ -80,6 +80,13 @@ def _title_from_text(text: str, fallback: str) -> str:
     return fallback
 
 
+def _string_list(value: Any) -> list[str]:
+    if value is None:
+        return []
+    values = value if isinstance(value, list) else [value]
+    return [str(item).strip()[:200] for item in values if str(item).strip()]
+
+
 def scan_source(source: SourceSettings, settings: IndexSettings) -> Iterator[SourceDocument]:
     """Yield readable, allowlisted files rooted under one configured source."""
     root = source.path.resolve()
@@ -117,6 +124,14 @@ def scan_source(source: SourceSettings, settings: IndexSettings) -> Iterator[Sou
         fallback_title = path.stem.replace("-", " ").replace("_", " ").strip().title()
         title = str(metadata.get("title") or _title_from_text(body, fallback_title))[:300]
         status = str(metadata.get("status") or "active").strip().lower()[:100]
+        retrieval_metadata = {
+            "document_type": str(metadata.get("document_type") or content_type)
+            .strip()
+            .lower()[:100],
+            "date": str(metadata.get("date") or "").strip()[:40],
+            "people": _string_list(metadata.get("people")),
+            "tags": _string_list(metadata.get("tags")),
+        }
         digest = hashlib.sha256(raw).hexdigest()
         yield SourceDocument(
             scope=source.scope,
@@ -129,4 +144,5 @@ def scan_source(source: SourceSettings, settings: IndexSettings) -> Iterator[Sou
             sha256=digest,
             size_bytes=stat.st_size,
             modified_ns=stat.st_mtime_ns,
+            metadata=retrieval_metadata,
         )

@@ -57,6 +57,12 @@ def corpus(tmp_path: Path) -> Path:
         """---
 title: Request-handling guide
 status: active
+document_type: process-guide
+date: 2026-08-12
+people:
+  - Alex Example
+tags:
+  - service-level
 ---
 # Priority response
 

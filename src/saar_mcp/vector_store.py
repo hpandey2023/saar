@@ -86,6 +86,9 @@ class VectorStore:
                         "kind",
                         "scope",
                         "content_type",
+                        "document_type",
+                        "date",
+                        "people_norm",
                         "status",
                         "source_key",
                         "revision",
@@ -182,6 +185,9 @@ class VectorStore:
         *,
         scopes: list[str],
         content_types: list[str] | None,
+        document_types: list[str] | None,
+        dates: list[str] | None,
+        people: list[str] | None,
         exclude_statuses: list[str],
     ) -> models.Filter:
         must: list[Any] = [self._equals("kind", "chunk")]
@@ -193,6 +199,22 @@ class VectorStore:
             must.append(
                 models.FieldCondition(
                     key="content_type", match=models.MatchAny(any=sorted(set(content_types)))
+                )
+            )
+        if document_types:
+            must.append(
+                models.FieldCondition(
+                    key="document_type", match=models.MatchAny(any=sorted(set(document_types)))
+                )
+            )
+        if dates:
+            must.append(
+                models.FieldCondition(key="date", match=models.MatchAny(any=sorted(set(dates))))
+            )
+        if people:
+            must.append(
+                models.FieldCondition(
+                    key="people_norm", match=models.MatchAny(any=sorted(set(people)))
                 )
             )
         must_not: list[Any] = []
@@ -211,11 +233,17 @@ class VectorStore:
         *,
         scopes: list[str],
         content_types: list[str] | None,
+        document_types: list[str] | None,
+        dates: list[str] | None,
+        people: list[str] | None,
         retrieval: RetrievalSettings,
     ) -> tuple[list[SearchHit], str]:
         query_filter = self._filter(
             scopes=scopes,
             content_types=content_types,
+            document_types=document_types,
+            dates=dates,
+            people=people,
             exclude_statuses=retrieval.exclude_statuses,
         )
         if sparse_query is None:

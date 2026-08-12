@@ -22,7 +22,7 @@ from .state import StateStore
 from .vector_store import VectorStore
 
 T = TypeVar("T")
-INDEX_RECIPE_VERSION = 1
+INDEX_RECIPE_VERSION = 2
 
 
 def _batched(items: list[T], size: int) -> Iterable[list[T]]:
@@ -152,7 +152,7 @@ class RetrievalEngine:
         if getattr(self.embedder, "contextual_documents", False):
             batch_size = min(batch_size, self.settings.embedding.contextual_group_size)
         for batch in _batched(chunks, batch_size):
-            texts = [item.text for item in batch]
+            texts = [item.embedding_text() for item in batch]
             dense = self.embedder.embed_documents(texts)
             if len(dense) != len(batch) or any(
                 len(vector) != self.embedder.dimension for vector in dense
@@ -167,6 +167,9 @@ class RetrievalEngine:
         *,
         scopes: list[str] | None = None,
         content_types: list[str] | None = None,
+        document_types: list[str] | None = None,
+        dates: list[str] | None = None,
+        people: list[str] | None = None,
         limit: int | None = None,
     ) -> SearchResponse:
         normalized = " ".join(query.split())
@@ -179,6 +182,9 @@ class RetrievalEngine:
         valid_types = {"document", "code"}
         if content_types and not set(content_types).issubset(valid_types):
             raise ValueError("content_types may contain only 'document' and 'code'")
+        document_types = [item.strip().casefold() for item in document_types or [] if item.strip()]
+        dates = [item.strip() for item in dates or [] if item.strip()]
+        people = [item.strip().casefold() for item in people or [] if item.strip()]
 
         started = time.perf_counter()
         self.vector_store.ensure_collection()
@@ -193,6 +199,9 @@ class RetrievalEngine:
             sparse_query,
             scopes=selected,
             content_types=content_types,
+            document_types=document_types or None,
+            dates=dates or None,
+            people=people or None,
             retrieval=self.settings.retrieval,
         )
         hits = self._rerank(normalized, hits)

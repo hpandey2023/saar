@@ -18,6 +18,7 @@ class SourceDocument:
     sha256: str
     size_bytes: int
     modified_ns: int
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True, slots=True)
@@ -36,9 +37,29 @@ class DocumentChunk:
     chunk_index: int
     char_start: int
     char_end: int
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def embedding_text(self) -> str:
+        """Add bounded document context to embeddings without changing cited text."""
+        values = [f"Title: {self.title}", f"Section: {self.section}"]
+        for label, key in (
+            ("Document type", "document_type"),
+            ("Date", "date"),
+            ("People", "people"),
+            ("Tags", "tags"),
+        ):
+            value = self.metadata.get(key)
+            if isinstance(value, list):
+                value = ", ".join(str(item) for item in value[:50])
+            if value:
+                values.append(f"{label}: {value}")
+        values.extend(["", self.text])
+        return "\n".join(values)
 
     def payload(self) -> dict[str, Any]:
         """Return the Qdrant payload without exposing an absolute local path."""
+        people = [str(item) for item in self.metadata.get("people", [])]
+        tags = [str(item) for item in self.metadata.get("tags", [])]
         return {
             "kind": "chunk",
             "scope": self.scope,
@@ -54,6 +75,11 @@ class DocumentChunk:
             "chunk_index": self.chunk_index,
             "char_start": self.char_start,
             "char_end": self.char_end,
+            "document_type": str(self.metadata.get("document_type", "")),
+            "date": str(self.metadata.get("date", "")),
+            "people": people,
+            "people_norm": [item.casefold() for item in people],
+            "tags": tags,
         }
 
 
@@ -72,6 +98,10 @@ class SearchHit:
     retrieval_score: float | None = None
     reranker_score: float | None = None
     feedback: str | None = None
+    document_type: str = ""
+    date: str = ""
+    people: list[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
 
     @classmethod
     def from_payload(cls, point_id: object, score: float, payload: dict[str, Any]) -> SearchHit:
@@ -87,6 +117,10 @@ class SearchHit:
             status=str(payload.get("status", "active")),
             text=str(payload.get("text", "")),
             retrieval_score=float(score),
+            document_type=str(payload.get("document_type", "")),
+            date=str(payload.get("date", "")),
+            people=[str(item) for item in payload.get("people", [])],
+            tags=[str(item) for item in payload.get("tags", [])],
         )
 
     def as_dict(self, *, text_limit: int | None = None) -> dict[str, Any]:

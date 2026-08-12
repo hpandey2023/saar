@@ -27,6 +27,9 @@ def build_server(settings: Settings, *, engine: RetrievalEngine | None = None) -
         query: str,
         scopes: list[str] | None = None,
         content_types: list[str] | None = None,
+        document_types: list[str] | None = None,
+        dates: list[str] | None = None,
+        people: list[str] | None = None,
         limit: int | None = None,
     ) -> dict[str, Any]:
         """Search indexed context. Cite each result's `citation` in the final answer.
@@ -35,12 +38,18 @@ def build_server(settings: Settings, *, engine: RetrievalEngine | None = None) -
             query: A specific natural-language question or search phrase.
             scopes: Optional configured source scopes. Omit to search every scope.
             content_types: Optional `document` and/or `code` filter.
+            document_types: Optional frontmatter types, such as `transcript-evidence`.
+            dates: Optional exact ISO dates from frontmatter, such as `2026-08-12`.
+            people: Optional exact attendee or author names from frontmatter.
             limit: Maximum results to return, bounded by server configuration.
         """
         response = retrieval.search(
             query,
             scopes=scopes,
             content_types=content_types,
+            document_types=document_types,
+            dates=dates,
+            people=people,
             limit=limit,
         )
         return response.as_dict(text_limit=settings.retrieval.result_text_chars)
