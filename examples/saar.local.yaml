@@ -1,0 +1,42 @@
+server:
+  name: saar-local
+
+embedding:
+  provider: fastembed
+  model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+
+reranker:
+  provider: none
+
+lexical:
+  enabled: true
+  model: Qdrant/bm25
+
+qdrant:
+  mode: embedded
+  path: ../.saar/local/qdrant
+  collection: saar-local
+
+index:
+  state_path: ../.saar/local/state.sqlite3
+  max_file_bytes: 2000000
+  max_chunk_chars: 2400
+  chunk_overlap_chars: 240
+  min_chunk_chars: 80
+  batch_size: 64
+
+retrieval:
+  default_limit: 8
+  max_limit: 20
+  candidate_limit: 40
+  dense_weight: 1.0
+  lexical_weight: 1.0
+  max_per_source: 3
+
+feedback:
+  enabled: true
+  require_verified: true
+
+sources:
+  - scope: sample
+    path: sample-corpus

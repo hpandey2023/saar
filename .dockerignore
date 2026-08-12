@@ -1,0 +1,12 @@
+.git
+.github
+.saar
+.venv
+__pycache__
+*.py[cod]
+*.sqlite3
+dist
+build
+.coverage
+.pytest_cache
+.ruff_cache

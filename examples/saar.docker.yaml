@@ -1,0 +1,24 @@
+server:
+  name: saar-docker
+
+embedding:
+  provider: fastembed
+  model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+
+reranker:
+  provider: none
+
+lexical:
+  enabled: true
+
+qdrant:
+  mode: server
+  url: http://qdrant:6333
+  collection: saar-docker
+
+index:
+  state_path: /state/state.sqlite3
+
+sources:
+  - scope: project
+    path: /data/source

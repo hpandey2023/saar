@@ -1,0 +1,12 @@
+queries:
+  - query: How quickly must a high-priority request be acknowledged?
+    expected_sources:
+      - request-handling.md
+    scopes:
+      - sample
+
+  - query: What authentication is required for production access?
+    expected_sources:
+      - access-control.md
+    scopes:
+      - sample

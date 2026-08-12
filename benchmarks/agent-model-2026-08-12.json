@@ -1,0 +1,58 @@
+{
+  "generated_at": "2026-08-12T02:13:56+02:00",
+  "description": "Internal comparison using one agent model under three retrieval conditions",
+  "agent_model": "Identity omitted; the underlying model was held constant across conditions",
+  "questions": 10,
+  "answerable_questions": 8,
+  "negative_controls": 2,
+  "answerable_fact_denominator": 41,
+  "metric_definitions": {
+    "overall_score_pct": "Mean of the ten per-case rubric scores, including two negative controls",
+    "fact_recall_pct": "Rubric points recovered across 41 expected facts in eight answerable cases",
+    "supported_answers": "Answerable responses supported by retrieved source citations"
+  },
+  "results": {
+    "without_indexed_retrieval": {
+      "overall_score_pct": 20.0,
+      "fact_recall_pct": 0.0,
+      "supported_answers": 0,
+      "correct_negative_control_abstentions": 2,
+      "median_end_to_end_seconds": 5.3595
+    },
+    "initial_retrieval": {
+      "overall_score_pct": 76.21666666666667,
+      "fact_recall_pct": 71.5,
+      "supported_answers": 7,
+      "incorrect_assertions": 4,
+      "median_end_to_end_seconds": 35.3815
+    },
+    "current_retrieval": {
+      "overall_score_pct": 94.75,
+      "fact_recall_pct": 94.51219512195121,
+      "supported_answers": 8,
+      "incorrect_assertions": 0,
+      "correct_negative_control_abstentions": 2,
+      "median_end_to_end_seconds": 24.365,
+      "wins_vs_initial_retrieval": 5,
+      "ties_vs_initial_retrieval": 5,
+      "losses_vs_initial_retrieval": 0,
+      "median_latency_improvement_vs_initial_pct": 31.136328307166174
+    }
+  },
+  "verification": {
+    "source_rows_recomputed": 10,
+    "saved_checksums_verified": true,
+    "source_artifact_sha256": {
+      "results_csv": "fa00dcebad149f439492b198bbf80e4e3117481411ce7430e8bc38f36784a883",
+      "adjudication_json": "2a2bc1f9605e9ca166b90a9bc00b9a8caa5708ba0046125fab9a4a6e9310e49d",
+      "summary_json": "4110f391cc94a952c88ad57622177344eddac7f39b47129b5ae1d8a361a227c2",
+      "validation_json": "ba1cdf8657ff0590aee4cee8e785f375d1ea6e3fbce8e732d7dcd0551c739a83"
+    }
+  },
+  "caveats": [
+    "One run per question; results were not replicated across random seeds.",
+    "The rubric was prewritten, but adjudication was manual and not blind.",
+    "The no-retrieval condition had no other access to the indexed sources.",
+    "The benchmark does not isolate the contribution of index cleanup, BM25, fusion, reranking, version filtering, or the improved tool contract."
+  ]
+}

@@ -1,0 +1,28 @@
+server:
+  name: saar-endpoint
+
+embedding:
+  provider: openai_compatible
+  model: internal-embedding-model
+  base_url: https://embeddings.example.internal/v1
+  api_key_env: EMBEDDING_API_KEY
+  dimensions: 1024
+
+reranker:
+  provider: none
+
+lexical:
+  enabled: true
+
+qdrant:
+  mode: server
+  url: https://qdrant.example.internal
+  api_key_env: QDRANT_API_KEY
+  collection: saar-endpoint
+
+index:
+  state_path: ../.saar/endpoint/state.sqlite3
+
+sources:
+  - scope: project
+    path: /replace/with/source/folder

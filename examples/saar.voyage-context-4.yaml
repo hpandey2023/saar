@@ -1,0 +1,31 @@
+server:
+  name: saar-voyage
+
+embedding:
+  provider: voyage
+  model: voyage-context-4
+  api_key_env: VOYAGE_API_KEY
+  dimensions: 1024
+  contextual_group_size: 32
+
+reranker:
+  provider: voyage
+  model: rerank-2.5
+  api_key_env: VOYAGE_API_KEY
+  top_k: 30
+
+lexical:
+  enabled: true
+
+qdrant:
+  mode: embedded
+  path: ../.saar/voyage/qdrant
+  collection: saar-voyage-context-4
+
+index:
+  state_path: ../.saar/voyage/state.sqlite3
+  chunk_overlap_chars: 0
+
+sources:
+  - scope: project
+    path: /replace/with/source/folder

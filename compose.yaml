@@ -1,0 +1,60 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.19.0
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/6333"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+    ports:
+      - "127.0.0.1:6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  mcp:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      qdrant:
+        condition: service_healthy
+    command:
+      - --config
+      - /config/saar.yaml
+      - serve
+      - --transport
+      - http
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --allow-network
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./examples/saar.docker.yaml:/config/saar.yaml:ro
+      - ${CONTEXT_SOURCE:-./examples/sample-corpus}:/data/source:ro
+      - state_data:/state
+      - model_cache:/home/app/.cache
+
+  index:
+    build: .
+    profiles: [tools]
+    depends_on:
+      qdrant:
+        condition: service_healthy
+    command:
+      - --config
+      - /config/saar.yaml
+      - index
+    volumes:
+      - ./examples/saar.docker.yaml:/config/saar.yaml:ro
+      - ${CONTEXT_SOURCE:-./examples/sample-corpus}:/data/source:ro
+      - state_data:/state
+      - model_cache:/home/app/.cache
+
+volumes:
+  qdrant_data:
+  state_data:
+  model_cache:

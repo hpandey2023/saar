@@ -1,0 +1,27 @@
+server:
+  name: saar-qwen3
+
+embedding:
+  provider: ollama
+  model: qwen3-embedding:0.6b
+  base_url: http://localhost:11434
+  dimensions: 1024
+  query_prefix: "Instruct: Retrieve passages that answer the query.\nQuery: "
+
+reranker:
+  provider: none
+
+lexical:
+  enabled: true
+
+qdrant:
+  mode: embedded
+  path: ../.saar/qwen3/qdrant
+  collection: saar-qwen3
+
+index:
+  state_path: ../.saar/qwen3/state.sqlite3
+
+sources:
+  - scope: project
+    path: /replace/with/source/folder

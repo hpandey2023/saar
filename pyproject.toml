@@ -1,0 +1,66 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "saar-mcp"
+version = "0.1.0"
+description = "Retrieve focused, cited context from designated documents and code for MCP agents."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "Saar contributors" }]
+keywords = ["mcp", "retrieval", "rag", "qdrant", "embeddings"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  "fastembed>=0.8,<0.9",
+  "fastmcp>=3.4.7,<3.5",
+  "httpx>=0.28,<0.29",
+  "pydantic>=2.11,<3",
+  "PyYAML>=6,<7",
+  "qdrant-client>=1.19,<1.20",
+]
+
+[project.optional-dependencies]
+voyage = ["voyageai>=0.5,<0.6"]
+dev = [
+  "build>=1.2,<2",
+  "pip-audit>=2.9,<3",
+  "pytest>=9.0.3,<10",
+  "pytest-cov>=6,<8",
+  "ruff>=0.12,<1",
+]
+
+[project.scripts]
+saar = "saar_mcp.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/saar_mcp"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["saar_mcp"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
