@@ -75,7 +75,7 @@ MCP makes the tool available; the rule makes its use consistent. Each agent or c
 
 - Hybrid semantic and BM25 retrieval with weighted rank fusion
 - Structured chunking for documents, configuration, and source code
-- Citations, source scopes, filters, and stale-content exclusion
+- Citations, source scopes, content/document-type/date/person filters, and stale-content exclusion
 - Incremental indexing and a folder watcher
 - Embedded or server-hosted Qdrant
 - Retrieval evaluation and guarded, human-verified feedback
@@ -90,6 +90,7 @@ saar doctor              # check the setup
 saar index               # index new and changed files
 saar watch               # keep the index current
 saar search "question"   # inspect retrieval directly
+saar search "decision" --document-type transcript-evidence --date 2026-08-12 --person "Alex Example"
 saar evaluate eval.yaml  # measure retrieval quality
 saar serve               # run the MCP server
 ```

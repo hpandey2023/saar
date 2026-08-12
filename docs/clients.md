@@ -30,3 +30,5 @@ Record feedback only when a person explicitly verifies the result.
 ```
 
 MCP makes tools available; it does not guarantee an agent will call them. Client instructions and an evaluation set are both necessary when retrieval should be the default for corpus-dependent work.
+
+`search_context` accepts optional `document_types`, `dates`, and `people` lists. These match YAML frontmatter exactly (with case normalization where appropriate), which lets an agent prefer canonical evidence, target a specific meeting date, or narrow a search to material associated with a named person.

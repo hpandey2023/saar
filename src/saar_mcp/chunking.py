@@ -114,6 +114,7 @@ def chunk_document(document: SourceDocument, settings: IndexSettings) -> list[Do
                     chunk_index=chunk_index,
                     char_start=char_start,
                     char_end=char_end,
+                    metadata=document.metadata,
                 )
             )
     return chunks

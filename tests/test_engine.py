@@ -41,6 +41,27 @@ def test_scope_and_content_filters(engine):
     assert {item.content_type for item in response.results} == {"code"}
 
 
+def test_frontmatter_metadata_is_searchable_and_filterable(engine):
+    engine.index()
+    response = engine.search(
+        "request handling",
+        document_types=["process-guide"],
+        dates=["2026-08-12"],
+        people=["Alex Example"],
+    )
+    assert response.results
+    hit = response.results[0]
+    assert hit.document_type == "process-guide"
+    assert hit.date == "2026-08-12"
+    assert hit.people == ["Alex Example"]
+    assert "service-level" in hit.tags
+
+    absent = engine.search("request handling", people=["Nobody Else"])
+    assert absent.results == []
+    wrong_date = engine.search("request handling", dates=["2026-08-11"])
+    assert wrong_date.results == []
+
+
 def test_verified_feedback_changes_exact_repeated_query(engine):
     engine.index()
     first = engine.search("access credentials", limit=4)

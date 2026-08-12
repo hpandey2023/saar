@@ -137,6 +137,9 @@ def command_search(arguments: argparse.Namespace) -> int:
             arguments.query,
             scopes=_split_csv(arguments.scope),
             content_types=_split_csv(arguments.content_type),
+            document_types=_split_csv(arguments.document_type),
+            dates=_split_csv(arguments.date),
+            people=_split_csv(arguments.person),
             limit=arguments.limit,
         )
     _json(response.as_dict(text_limit=settings.retrieval.result_text_chars))
@@ -278,6 +281,17 @@ def build_parser() -> argparse.ArgumentParser:
     search.add_argument("--scope", action="append", help="scope or comma-separated scopes")
     search.add_argument(
         "--content-type", action="append", help="document, code, or comma-separated values"
+    )
+    search.add_argument(
+        "--document-type",
+        action="append",
+        help="frontmatter document type or comma-separated values",
+    )
+    search.add_argument(
+        "--date", action="append", help="exact frontmatter ISO date or comma-separated values"
+    )
+    search.add_argument(
+        "--person", action="append", help="exact frontmatter person name or comma-separated values"
     )
     search.add_argument("--limit", type=int)
     search.set_defaults(handler=command_search)

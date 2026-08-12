@@ -32,10 +32,18 @@ def test_mcp_tools_are_callable_in_process(settings):
             assert search.annotations is not None
             assert search.annotations.readOnlyHint is True
             result = await client.call_tool(
-                "search_context", {"query": "priority request acknowledgement", "limit": 2}
+                "search_context",
+                {
+                    "query": "priority request acknowledgement",
+                    "document_types": ["process-guide"],
+                    "dates": ["2026-08-12"],
+                    "people": ["Alex Example"],
+                    "limit": 2,
+                },
             )
             assert result.data["result_count"] >= 1
             assert result.data["results"][0]["citation"].startswith("operations/")
+            assert result.data["results"][0]["document_type"] == "process-guide"
 
     try:
         asyncio.run(exercise())
