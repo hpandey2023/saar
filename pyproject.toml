@@ -21,7 +21,7 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = [
-  "fastembed>=0.8,<0.9",
+  "fastembed>=0.8,<0.10",
   "fastmcp>=3.4.7,<3.5",
   "httpx>=0.28,<0.29",
   "pydantic>=2.11,<3",
